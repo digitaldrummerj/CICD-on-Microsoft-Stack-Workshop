@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>CI/CD On The Microsoft Stack Workshop</title>
+
+
+	<meta charset="utf-8">
+	<meta name="description" content="CI/CD On The Microsoft Stack Workshop">
+	<meta name="author" content="Rob Richardson">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+	<div id="tutorial-container">
+		<div id="header">
+			<a href="#" class="menu header-btn" id="toggle-toc"></a>
+			<h1>CI/CD On The Microsoft Stack Workshop</h1>
+			<a href="https://github.com/robrich/CICD-on-Microsoft-Stack-Workshop" class="github header-btn"></a>
+		</div>
+		<div id="tutorial-content-container">
+			<div id="toc">
+				<div class="toc-heading">Table of Contents</div>
+				<div id="toc-padding"></div>
+			</div>
+			<div id="book">
+				<div class="chapter">
+					@@include(markdown("chapters/00-other-tools/readme.md"))
+				</div>
+				<hr>
+				<div class="chapter">
+					@@include(markdown("chapters/01-iis/README.md"))
+				</div>
+				<hr>
+				<div class="chapter">
+					@@include(markdown("chapters/02-sql-server/README.md"))
+				</div>
+
+				<hr>
+				<div class="chapter">
+					@@include(markdown("chapters/03-sql-server-management-studio/README.md"))
+				</div>
+				<hr>
+
+				<div class="chapter">
+					@@include(markdown("chapters/04-NuGet-command-line/README.md"))
+				</div>
+				<hr>
+
+				<div class="chapter">
+					@@include(markdown("chapters/05-MSBuild/README.md"))
+				</div>
+				<hr>
+				<div class="chapter">
+					@@include(markdown("chapters/06-git/README.md"))
+				</div>
+
+				<hr>
+				<div class="chapter">
+					@@include(markdown("chapters/07-build-.net-solution/README.md"))
+				</div>
+
+				<hr>
+				<div class="chapter">
+					@@include(markdown("chapters/08-teamcity/README.md"))
+				</div>
+
+				<hr>
+				<div class="chapter">
+					@@include(markdown("chapters/09-octopus-deploy/README.md"))
+				</div>
+
+				<hr>
+				<div class="chapter">
+					@@include(markdown("chapters/10-git-server/README.md"))
+				</div>
+
+				<hr>
+				<div class="chapter">
+					@@include(markdown("chapters/11-build-script/README.md"))
+				</div>
+
+				<hr>
+				<div class="chapter">
+					@@include(markdown("chapters/12-teamcity-build/README.md"))
+				</div>
+
+				<hr>
+				<div class="chapter">
+					@@include(markdown("chapters/13-octopus-build/README.md"))
+				</div>
+				<hr>
+				<div class="chapter">
+					@@include(markdown("chapters/14-promote-to-test/README.md"))
+				</div>
+				<hr>
+				<!--<div class="chapter">
+					@@include(markdown("../tags.md"))
+				</div>
+				<hr>-->
+			</div>
+		</div>
+	</div>
+
+	<script src="scripts/built.js"></script>
+
+</body>
+
+</html>

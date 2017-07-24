@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>CI/CD On The Microsoft Stack Workshop</title>
+
+
+	<meta charset="utf-8">
+	<meta name="description" content="CI/CD On The Microsoft Stack Workshop">
+	<meta name="author" content="Rob Richardson">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+	<div id="tutorial-container">
+		<div id="header">
+			<a href="#" class="menu header-btn" id="toggle-toc"></a>
+			<h1>CI/CD On The Microsoft Stack Workshop</h1>
+			<a href="https://github.com/robrich/CICD-on-Microsoft-Stack-Workshop" class="github header-btn"></a>
+		</div>
+		<div id="tutorial-content-container">
+			<div id="toc">
+				<div class="toc-heading">Table of Contents</div>
+				<div id="toc-padding"></div>
+			</div>
+			<div id="book">
+				<div class="chapter">
+					<h2 id="other-tools">OTHER TOOLS</h2>
+<p>To help manage the server, you may choose to install other tools.  Here&#39;s some of my favorites:</p>
+<ul>
+<li><p><a href="http://www.7-zip.org/">7 Zip</a> - easier than the extract wizard in Windows</p>
+</li>
+<li><p><a href="https://www.sublimetext.com/">Sublime Text</a> - you could also choose Notepad++, Atom, Brackets, Visual Studio Code, or a number of others.  You&#39;ll want one that can preserve Unix-style line endings, so avoid Notepad.</p>
+</li>
+</ul>
+
+				</div>
+				<hr>
+				<div class="chapter">
+					<h2 id="iis-web-server-">IIS (Web Server)</h2>
+<p>Internet Information Services (IIS) is the web server that comes bundled with Windows.</p>
+<h3 id="install">Install</h3>
+<ol>
+<li><p>Start -&gt; Type <code>Windows Features</code> to launch <code>Turn Windows features on or off</code>.</p>
+</li>
+<li><p>Inside <code>Internet Information Services</code>, inside <code>Web Management Tools</code>, turn on <code>IIS Management Console</code>.</p>
+</li>
+<li><p>Inside <code>Internet Information Services</code>, inside <code>World Wide Web Services</code>, inside <code>Application Development Features</code> turn on <code>ASP.NET 4.6</code>.  Many other things will turn on when you choose this.</p>
+</li>
+</ol>
+<p><img src="images/01-iis/1-enable-iis.png" alt="Enable IIS"></p>
+<ol>
+<li><p>You may choose to turn on other settings in <code>Internet Information Services</code> such as Logging.</p>
+</li>
+<li><p>Ensure that these settings are <strong>OFF</strong> to avoid security risks:</p>
+</li>
+<li><p>Inside <code>World Wide Web Services</code> ensure <code>WebDAV Publishing</code> is <strong>OFF</strong>.</p>
+</li>
+<li><p>Ensure <code>FTP Server</code> is <strong>OFF</strong>.</p>
+</li>
+<li><p>Push OK to start the install.</p>
+</li>
+</ol>
+<h3 id="test-it-out">Test it out</h3>
+<ol>
+<li><p>Open a browser and navigate to <a href="http://localhost">localhost</a>.</p>
+</li>
+<li><p>You should see the &quot;Welcome to IIS&quot; page.</p>
+</li>
+</ol>
+<h3 id="configure">Configure</h3>
+<p>By default, IIS creates a default website which may get in your way later on.</p>
+<ol>
+<li><p>Start -&gt; <code>Internet Information Services (IIS)</code>.</p>
+</li>
+<li><p>Open up Sites</p>
+</li>
+<li><p>Right-click on Default Web Site and click Remove.</p>
+</li>
+<li><p>Click on Application Pools.</p>
+</li>
+<li><p>Right click on each application pool listed and click Remove.</p>
+</li>
+</ol>
+<p>Once you do this, browsing to <a href="http://localhost">localhost</a> will give you a &quot;connection refused&quot; page.</p>
+
+				</div>
+				<hr>
+				<div class="chapter">
+					<h2 id="sql-server-developer-edition">SQL SERVER DEVELOPER EDITION</h2>
+<p>=</p>
+<p>Starting in March 2016, SQL Server Developer Edition is now a free download.  We&#39;ll use SQL Developer Edition here because SQL Express doesn&#39;t have SQL Agent, useful for scheduling maintenance tasks.  See also <a href="https://blogs.technet.microsoft.com/dataplatforminsider/2016/03/31/microsoft-sql-server-developer-edition-is-now-free/">https://blogs.technet.microsoft.com/dataplatforminsider/2016/03/31/microsoft-sql-server-developer-edition-is-now-free/</a></p>
+<h3 id="install">Install</h3>
+<ol>
+<li><p>Download <a href="https://myprodscussu1.app.vssubscriptions.visualstudio.com/Downloads?q=SQL%20Server%202016%20Developer">SQL Server 2016 Developer Edition</a></p>
+</li>
+<li><p>Mount <code>en_sql_server_2016_developer_bunch_of_numbers.iso</code> using your favorite tool or double-click the ISO to mount it as a CD drive in Windows 10.</p>
+</li>
+<li><p>Open the installer by opening the new CD drive.</p>
+</li>
+<li><p>Choose installation on the left, and New SQL Server Stand-alone installation from the right</p>
+</li>
+</ol>
+<p><img src="images/02-sql-server/1-installer.png" alt="Install SQL Server"></p>
+<ol>
+<li><p>Click next a few times.</p>
+</li>
+<li><p>The Windows Firewall warning is ok.  We won&#39;t use SQL Server from other machines.</p>
+</li>
+<li><p>Note these important settings:</p>
+</li>
+</ol>
+<p><img src="images/02-sql-server/2-install-engine.png" alt="Database Engine"></p>
+<p>Though SQL Server comes with lots of features, we only need the base engine.</p>
+<p><img src="images/02-sql-server/3-default-instance.png" alt="Default Instance"></p>
+<p>We&#39;ll assume the default instance for the rest of the workshop.</p>
+<p><img src="images/02-sql-server/4-permissions.png" alt="Permissions"></p>
+<p>Some of the setup will require username/password, so we&#39;ll choose mixed-mode (Windows Auth and user/pass), we&#39;ll set a password, and add the current user as an admin -- so you can manage your database.</p>
+<ol>
+<li>Finish the install choices, and complete the install.</li>
+</ol>
+<h3 id="configure">Configure</h3>
+<p>TeamCity will use JDBC to connect on port 1433.  Let&#39;s enable TCP connections to SQL Server.</p>
+<ol>
+<li><p>Start -&gt; <code>SQL Server 2016 Configuration Manager</code>.</p>
+</li>
+<li><p>Open <code>SQL Server Network Configuration</code>, and open <code>TCP/IP</code>.</p>
+</li>
+</ol>
+<p><img src="images/02-sql-server/5-configuration-manager.png" alt="Network Configuration"></p>
+<ol>
+<li>Enable TCP/IP.</li>
+</ol>
+<p><img src="images/02-sql-server/6-enable-tcp.png" alt="Enable TCP"></p>
+<ol>
+<li><p>Switch to the IP Addresses tab to see the port is 1433.</p>
+</li>
+<li><p>Close the dialog, OK to the message about restarting.</p>
+</li>
+<li><p>Switch to the SQL Server Services, and restart the SQL Server service.</p>
+</li>
+</ol>
+<p><img src="images/02-sql-server/7-restart-service.png" alt="Restart Service"></p>
+<h3 id="test-it-out">Test it out</h3>
+<p>We haven&#39;t installed SQL Management Studio yet, so we can&#39;t test it yet.</p>
+<p>Once SQL Management Studio is installed:</p>
+<ol>
+<li><p>Launch SQL Management Studio</p>
+</li>
+<li><p>Connect to the default instance (use the server name or change to <code>.</code>)</p>
+</li>
+<li><p>If you get no errors, named pipe connections work.</p>
+</li>
+<li><p>Click Connect in the top-left.</p>
+</li>
+<li><p>Switch to <code>SQL Server Authentication</code> (meaning username/password).</p>
+</li>
+</ol>
+<p><img src="images/02-sql-server/8-sql-authentication.png" alt="SQL Server Authentication"></p>
+<ol>
+<li><p>Username is <code>sa</code>, password is the password you entered during installation.</p>
+</li>
+<li><p>Choose Options.</p>
+</li>
+<li><p>Choose the Connection Options tab.</p>
+</li>
+<li><p>Switch to <code>TCP Protocol</code>.</p>
+</li>
+</ol>
+<p><img src="images/02-sql-server/9-tcp-protocol.png" alt="TCP Protocol"></p>
+<ol>
+<li><p>Push Connect.</p>
+</li>
+<li><p>If you get no errors, TCP connections work too.</p>
+</li>
+</ol>
+
+				</div>
+
+				<hr>
+				<div class="chapter">
+					<h2 id="sql-server-management-studio-ssms-">SQL SERVER MANAGEMENT STUDIO (SSMS)</h2>
+<p>In past versions, SQL Server Management Studio (SSMS) was part of the SQL install disk.  It&#39;s now a separate download because it is now free where the SQL Server engine is still paid.</p>
+<h3 id="install">Install</h3>
+<ol>
+<li><p>Download <a href="https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms">SSMS</a></p>
+</li>
+<li><p>Launch <code>SSMS-Setup-ENU.exe</code>.</p>
+</li>
+<li><p>Push next, and complete the install.  Because it uses the Visual Studio 2015 shell, this takes a long time.</p>
+</li>
+<li><p>Restart the machine when prompted.</p>
+</li>
+</ol>
+<h3 id="test-it-out">Test it out</h3>
+<ol>
+<li><p>Start -&gt; <code>Microsoft SQL Server Management Studio</code></p>
+</li>
+<li><p>Connect to the default instance (use the server name or change to <code>.</code>)</p>
+</li>
+<li><p>If you get no errors, it works.</p>
+</li>
+<li><p>Let&#39;s return to SQL Server, and verify <code>TCP</code> connections work too.</p>
+</li>
+</ol>
+
+				</div>
+				<hr>
+
+				<div class="chapter">
+					<h2 id="nuget-command-line">NuGet Command Line</h2>
+<p>NuGet command line allows us to run <code>nuget restore</code> as part of the build.</p>
+<h3 id="install">Install</h3>
+<ol>
+<li><p>Download <a href="https://dist.nuget.org/index.html">NuGet Commandline</a></p>
+</li>
+<li><p>Create <code>NuGet</code> folder in <code>C:\Program Files (x86)</code></p>
+</li>
+<li><p>Copy <code>nuget.exe</code> into the folder.</p>
+</li>
+</ol>
+<h3 id="configure">Configure</h3>
+<p>Let&#39;s add NuGet to the <code>PATH</code> environment variable so commands can use it without specifying the full path.</p>
+<ol>
+<li><p>Start -&gt; Type <code>environment variables</code> to launch <code>Edit System Environment Variables</code></p>
+</li>
+<li><p>Click <code>Environment Variables...</code></p>
+</li>
+<li><p>In the lower <code>System</code> section, choose <code>PATH</code> and click <code>Edit</code></p>
+</li>
+</ol>
+<p><img src="images/05-MSBUILD/1-path-env-var.png" alt="PATH environment var"></p>
+<ol>
+<li><p>Add <code>C:\Program Files (x86)\NuGet</code> to the list.</p>
+</li>
+<li><p>Restart any services or terminals that depend on NuGet to update the <code>PATH</code> environment variable.</p>
+</li>
+</ol>
+<h3 id="test-it-out">Test it out</h3>
+<ol>
+<li><p>Open a new command prompt in any directory.  <em>Note</em>: because we just changed the <code>PATH</code> environment variable, existing processes and shells won&#39;t be able to run msbuild.</p>
+</li>
+<li><p>Type <code>nuget</code>.</p>
+</li>
+<li><p>If you don&#39;t see any errors, it worked.</p>
+</li>
+</ol>
+
+				</div>
+				<hr>
+
+				<div class="chapter">
+					<h2 id="msbuild">MSBuild</h2>
+<p>MSBuild is installed with .NET 4.0 in <code>C:\Windows\Microsoft.NET\Framework64\v4.0.30319</code>, but this won&#39;t build .NET 4.5 or 4.6 projects.  Let&#39;s install a more recent version of MSBuild.</p>
+<h3 id="install">Install</h3>
+<ol>
+<li><p>Download <a href="https://www.microsoft.com/en-us/download/details.aspx?id=48159">Microsoft Build Tools</a></p>
+</li>
+<li><p>Launch <code>BuildTools_Full.exe</code>.</p>
+</li>
+<li><p>Push next, and complete the install.</p>
+</li>
+<li><p>Restart any services or terminals that depend on msbuild to update the <code>PATH</code> environment variable.</p>
+</li>
+<li><p>From a machine with Visual Studio installed, copy the <code>C:\Program Files (x86)\MSBuild\Microsoft</code> folder and merge it into the folder on this machine.  On the thumb drive, this is <code>MSBuild-Microsoft.zip</code>.  This puts the <code>*.targets</code> files into place for building weird things.</p>
+</li>
+</ol>
+<h3 id="configure">Configure</h3>
+<p>Let&#39;s add MSBuild to the <code>PATH</code> environment variable so commands can use it without specifying the full path.</p>
+<ol>
+<li><p>Start -&gt; Type <code>environment variables</code> to launch <code>Edit System Environment Variables</code></p>
+</li>
+<li><p>Click <code>Environment Variables...</code></p>
+</li>
+<li><p>In the lower <code>System</code> section, choose <code>PATH</code> and click <code>Edit</code></p>
+</li>
+</ol>
+<p><img src="images/05-MSBUILD/1-path-env-var.png" alt="PATH environment var"></p>
+<ol>
+<li><p>Add <code>C:\Program Files (x86)\MSBuild\14.0\Bin</code> to the list, ensuring it&#39;s above any <code>C:\Windows\Microsoft.NET\Framework</code> directories.</p>
+</li>
+<li><p>Restart any services or terminals that depend on MSBuild to update the <code>PATH</code> environment variable.</p>
+</li>
+</ol>
+<h3 id="test-it-out">Test it out</h3>
+<ol>
+<li><p>Open a new command prompt in any directory.  <em>Note</em>: because we just changed the <code>PATH</code> environment variable, existing processes and shells won&#39;t be able to run msbuild.</p>
+</li>
+<li><p>Type <code>msbuild /version</code>.</p>
+</li>
+<li><p>If you don&#39;t see any errors, it worked.</p>
+</li>
+</ol>
+
+				</div>
+				<hr>
+				<div class="chapter">
+					<h2 id="git">GIT</h2>
+<p>There are other version control systems, but Git is the defacto standard now.  Unlike previous generations of version control where we were building competing products, because Git is free and open source, we&#39;re now building collaboration and integration with Git.</p>
+<h3 id="install">Install</h3>
+<ol>
+<li><p>Download <a href="images/06-git/https://git-scm.com/download">Git</a>.</p>
+</li>
+<li><p>Launch <code>Git-2.bunch-a-numbers.exe</code>.</p>
+</li>
+<li><p>Click next a few times.</p>
+</li>
+<li><p>Note these important settings:</p>
+</li>
+</ol>
+<p><img src="images/06-git/1-git-from-windows-prompt.png" alt="Windows Prompt"></p>
+<p>This says put Git&#39;s install directory in <code>PATH</code> environment variable.</p>
+<p><img src="images/06-git/2-checkout-windows-commit-unux.png" alt="Checkout Style"></p>
+<p>This says change <code>\r\n</code> to <code>\n</code> when committing and <code>\n</code> to <code>\r\n</code> when checking out.  Though it&#39;s tempting to choose the &quot;leave it how it is&quot; setting, if one person on your team forgets this setting, you&#39;ll see a lot of <code>^M</code> at the end of every line in diff views, and Visual Studio will constantly prompt you to normalize line endings.  Better to standardize on this default.</p>
+<ol>
+<li><p>Finish the install choices, and complete the install.</p>
+</li>
+<li><p>Restart any services or terminals that depend on git to update the <code>PATH</code> environment variable.</p>
+</li>
+</ol>
+<h3 id="configure">Configure</h3>
+<ol>
+<li><p>Open a new command prompt in any directory.  <em>Note</em>: because the installer changed the <code>PATH</code> environment variable, existing processes and shells won&#39;t be able to run git.</p>
+</li>
+<li><p>Type <code>git config --global user.name &quot;Sample User&quot;</code> substituting your first and last name.</p>
+</li>
+<li><p>Type <code>git config --global user.email &quot;you@example.com&quot;</code> substituting your email address.  Your name and email become metadata on each commit.</p>
+</li>
+</ol>
+<h3 id="test-it-out">Test it out</h3>
+<ol>
+<li><p>Create a directory -- you&#39;ll delete it in a minute.</p>
+</li>
+<li><p>Open a new command prompt in this directory.  <em>Note</em>: because the installer changed the <code>PATH</code> environment variable, existing processes and shells won&#39;t be able to run git.</p>
+</li>
+<li><p>Type these commands:</p>
+</li>
+</ol>
+<pre><code class="lang-bash">git init
+echo &quot;test&quot; &gt; test.txt
+git add test.txt
+git commit -m &quot;test&quot;
+</code></pre>
+<ol>
+<li><p>If you got no errors in the terminal, git is now installed correctly.</p>
+</li>
+<li><p>Close the terminal, and delete the test directory.</p>
+</li>
+</ol>
+<h3 id="show-file-extensions">Show File Extensions</h3>
+<p>By default, Windows hides file extensions, so files like <code>.gitignore</code> or folders like <code>.git</code> just show up as <code>.</code> in Windows Explorer.  Let&#39;s show file extensions.</p>
+<ol>
+<li><p>Start -&gt; Type &#39;Folder options&#39; until it prompts for <code>File and Folder Options</code>.</p>
+</li>
+<li><p>Switch to the <code>View</code> tab.</p>
+</li>
+<li><p>Uncheck <code>Hide extensions for known file types</code>.</p>
+</li>
+<li><p>Choose <code>Show hidden files, folders, and drives</code>.</p>
+</li>
+<li><p>Uncheck <code>Hide protected operating system files</code>.</p>
+</li>
+</ol>
+<p><img src="images/06-git/3-folder-options.png" alt="Folder Options"></p>
+
+				</div>
+
+				<hr>
+				<div class="chapter">
+					<h2 id="build-net-solution">BUILD .NET SOLUTION</h2>
+<p>We&#39;re going to flex the Microsoft Build tools to build a website and run unit tests.</p>
+<h3 id="background">Background</h3>
+<p>This project is just a new ASP.NET MVC website using .NET 4.5.2 with OctoPack NuGet package, and a companion unit test project switched to use XUnit.  You can find this solution on GitHub at <a href="https://github.com/robrich/CICD-Sample-App">https://github.com/robrich/CICD-Sample-App</a>.</p>
+<h3 id="contents-of-the-zip-file">Contents of the Zip File</h3>
+<ol>
+<li><p>File -&gt; New Project</p>
+</li>
+<li><p>ASP.NET Web Application (not core)</p>
+</li>
+<li><p>MVC project template</p>
+</li>
+<li><p>Authentication to No Authentication</p>
+</li>
+<li><p>Add Unit Tests</p>
+</li>
+<li><p>Add these NuGet packages:</p>
+<ul>
+<li>xunit - the test library</li>
+<li>xunit.runner.visualstudio - for the Test Explorer window in VS</li>
+<li>xunit.runner.console - to run tests from the command line</li>
+<li>FluentAssertions - asserts read like sentences</li>
+<li>OctoPack - used by Octopus Deploy to build assets</li>
+</ul>
+</li>
+<li><p>Change Home Controller Tests to use XUnit instead of MSTest</p>
+</li>
+<li><p>Commit this to a local git repository.</p>
+</li>
+</ol>
+<h3 id="setup">Setup</h3>
+<ol>
+<li><p>Create a new folder in a conspicuous spot.</p>
+</li>
+<li><p>Unzip <code>.NET Website source code.zip</code> into this folder.</p>
+</li>
+</ol>
+<h3 id="run">Run</h3>
+<ol>
+<li><p>Open a command prompt in the directory with the solution file.</p>
+</li>
+<li><p>Type <code>nuget restore</code>.</p>
+</li>
+<li><p>Type <code>echo %ERRORLEVEL%</code>.  If it returns <code>0</code> the nuget restore worked.</p>
+</li>
+<li><p>Type <code>msbuild /m /p:Configuration=Release</code>.  <code>/m</code> says &quot;use all CPUs&quot;.</p>
+</li>
+<li><p>Type <code>echo %ERRORLEVEL%</code>.  If it returns <code>0</code> the build worked.</p>
+</li>
+<li><p>Inside <code>packages\xunit.runner.console.2.2.0\tools</code> you&#39;ll find <code>xunit.console.exe</code>, the test runner.  It&#39;s a NuGet package, so <code>nuget restore</code> brought it in.</p>
+</li>
+<li><p>Type <code>packages\xunit.runner.console.2.2.0\tools\xunit.console.exe WebApplication1.Tests\bin\Release\WebApplication1.Tests.dll -nunit WebApplication1.Tests.xml</code> to run the tests and output the results in NUnit format to an xml file.</p>
+</li>
+<li><p>Type <code>echo %ERRORLEVEL%</code>.  If it returns <code>0</code> all the tests passed.</p>
+</li>
+</ol>
+<h3 id="other-options">Other Options</h3>
+<ul>
+<li>If you&#39;re building .NET 4.6, you&#39;ll need <a href="http://getdotnet.azurewebsites.net/target-dotnet-platforms.html">.NET Targeting Pack</a> for the target .NET version.  If you&#39;re building .NET 3.5 or earlier, you&#39;ll need the <a href="http://getdotnet.azurewebsites.net/target-dotnet-platforms.html">.NET SDK</a> for the target .NET version.</li>
+</ul>
+
+				</div>
+
+				<hr>
+				<div class="chapter">
+					<h2 id="teamcity">TEAMCITY</h2>
+<p>JetBrains TeamCity is a build server not unlike Jenkins, Team Foundation Server, Cruise Control, or Bamboo.  TeamCity is <a href="https://www.jetbrains.com/teamcity/buy/">free</a> for up to 3 build agents and 20 build configurations, making it ideal for small companies.</p>
+<h3 id="setup">Setup</h3>
+<p>We&#39;ll need a Windows account to run the TeamCity website and build agent.  Technically these can run under the <code>SYSTEM</code> account, but there&#39;s cases where you&#39;ll want to login as the TeamCity account to install certificates or adjust registry keys.  Better to run TeamCity as a regular user.</p>
+<p>You could choose to make this a domain user rather than a local user.</p>
+<ol>
+<li><p>Right click on <code>This PC</code> (formerly <code>My Computer</code>), and choose Manage.</p>
+</li>
+<li><p>Choose Local Users and Groups then Users.</p>
+</li>
+<li><p>Right-click in the main window and choose <code>New User</code>.</p>
+</li>
+<li><p>Enter necessary user details.</p>
+<p><img src="images/08-teamcity/1-teamcity-user.png" alt="New User"></p>
+</li>
+<li><p>Ensure <code>User must change password</code> is <strong>not</strong> checked, <code>User cannot change password</code> is checked, and <code>Password never expires</code> is checked.</p>
+</li>
+<li><p>Click <code>Create</code>.</p>
+</li>
+<li><p>Open the newly created user, choose <code>Member Of</code>, and add <code>Administrators</code>.  The user may stop and start services, configure IIS settings, or other behaviors restricted to administrative users, so best to give this account access up front.</p>
+</li>
+</ol>
+<h3 id="install">Install</h3>
+<ol>
+<li><p>Download <a href="https://www.jetbrains.com/teamcity/download/">TeamCity</a></p>
+</li>
+<li><p>Launch <code>TeamCity-bunch_of_numbers.exe</code>.</p>
+</li>
+<li><p>Click next until it installs TeamCity.</p>
+</li>
+<li><p>Change the port to <code>8080</code> because IIS runs on port 80 by default.</p>
+<p><img src="images/08-teamcity/3-change-port.png" alt="Change Port"></p>
+</li>
+<li><p>No changes are needed on this page, but grab a screen shot for reference later.  The TeamCity documentation refers to , but the TeamCity documentation makes reference to the <code>System Directory</code>, <code>Work Directory</code>, and the <code>Data Directory</code> which is not shown here, but stored in <code>C:\ProgramData\JetBrains\TeamCity</code>.</p>
+<p><img src="images/08-teamcity/4-build-agent-properties.png" alt="Build Agent Properties"></p>
+</li>
+<li><p>For both the TeamCity Server and TeamCity Agent, choose to run under a user account.</p>
+<p><img src="images/08-teamcity/5-run-as-user-account.png" alt="User Account"></p>
+</li>
+<li><p>Enter the account details for the user created above.</p>
+<p><img src="images/08-teamcity/6-user-credentials.png" alt="User Credentials"></p>
+</li>
+<li><p>Choose to Open the TeamCity UI after setup is finished, which will open <a href="http://localhost:8080/">http://localhost:8080/</a> in your default browser.</p>
+</li>
+</ol>
+<h3 id="configuration-setup">Configuration Setup</h3>
+<p>TeamCity will connect via JDBC username/password to SQL Server, so let&#39;s set up a database and user.</p>
+<ol>
+<li><p>Start -&gt; SQL Server Management Studio (SSMS)</p>
+</li>
+<li><p>Connect to the local database using Windows Authentication.</p>
+</li>
+<li><p>Right-click on Databases, and choose <code>New Database</code>.</p>
+<p><img src="images/08-teamcity/7-new-database.png" alt="New Database"></p>
+</li>
+<li><p>Enter a Database Name, and click Create.</p>
+<p><img src="images/08-teamcity/8-database-name.png" alt="Database Name"></p>
+</li>
+<li><p>Inside Security, right-click on Logins and choose <code>New Login</code>.</p>
+<p><img src="images/08-teamcity/9-new-login.png" alt="New Login"></p>
+</li>
+<li><p>Enter the Login Name, password, uncheck <code>Enforce password policy</code>, and change the Default database to the database created above.</p>
+<p><img src="images/08-teamcity/10-database-user.png" alt="New User"></p>
+</li>
+<li><p>Switch to the <code>User Mapping</code> page, and set:</p>
+<p>a. Check the database created above.</p>
+<p>b. Set default schema to <code>dbo</code>.</p>
+<p>c. Check <code>db_owner</code> because TeamCity will create tables.</p>
+<p><img src="images/08-teamcity/11-database-user-mapping.png" alt="User Mapping"></p>
+<p>(Technically you only need <code>db_owner</code> as you first configure TeamCity and whenever you upgrade to a new TeamCity version.)</p>
+</li>
+<li><p>Click <code>OK</code> to create the user.</p>
+</li>
+</ol>
+<h3 id="configure">Configure</h3>
+<ol>
+<li><p>If it didn&#39;t launch already, open <a href="http://localhost:8080/">http://localhost:8080/</a> in your favorite browser.</p>
+</li>
+<li><p>Click Proceed.</p>
+</li>
+<li><p>Configure the database connection by choosing:</p>
+<p>a. <code>MS SQL Server</code> as the database type.</p>
+<p>b. Download <a href="https://www.microsoft.com/en-us/download/details.aspx?displaylang=en&amp;id=11774">Microsoft JDBC Driver</a></p>
+<p>c. Unzip <code>sqljdbc_6.0.8112.100_enu.exe</code> to a convinient directory.</p>
+<p>d. Copy <code>sqljdbc42.jar</code> from the <code>enu\jre8</code> folder to <code>C:\ProgramData\JetBrains\TeamCity\lib\jdbc</code></p>
+<p>e. Back on the TeamCity website, click <code>Refresh JDBC drivers</code>.</p>
+<p>f. Enter the database name you created above.</p>
+<p>g. Enter the username and password you created above.</p>
+<p><img src="images/08-teamcity/12-database-configuration.png" alt="Database Configuration"></p>
+<p>h. Click Proceed.</p>
+</li>
+<li><p>Click next a few times.</p>
+</li>
+<li><p>Create the Administrator account -- the first user login to TeamCity.</p>
+</li>
+<li><p>You may choose to set your name and email address, or skip it by hitting the TeamCity logo on the top-left.</p>
+</li>
+<li><p>Choose Administration on the top-right.</p>
+</li>
+<li><p>In Global Settings, change the <code>Default VCS trigger quiet period</code> to <code>1</code> second -- the time after it notices changes before it starts building.  The quiet period allows the server to wait for other commits and build them all together.  60 seconds is great for a real build server, but you won&#39;t want to wait a minute after pushing changes before the build kicks up.</p>
+</li>
+<li><p>In Global Settings, change the <code>Default VCS changes check interval</code> to <code>5</code> seconds.  60 seconds is great for a real build server, but you won&#39;t want to wait a minute after pushing changes before the build server notices.</p>
+</li>
+</ol>
+<p>TeamCity is now setup and ready to add new builds.</p>
+
+				</div>
+
+				<hr>
+				<div class="chapter">
+					<h2 id="octopus-deploy">OCTOPUS DEPLOY</h2>
+<p>Octopus Deploy takes build assets (applications and databases) and deploys them to each environment.  It&#39;s easy to promote builds up the stream from dev to test to QA to production.  Octopus is <a href="https://octopus.com/purchase">free</a> for small teams for commercial use.</p>
+<h3 id="install">Install</h3>
+<ol>
+<li><p>Download <a href="https://octopus.com/downloads">Octopus Server</a>.</p>
+</li>
+<li><p>Launch <code>Octopus.bunch_of_numbers.msi</code>.</p>
+</li>
+<li><p>Push Next a bunch of times.</p>
+</li>
+<li><p>Click Finish to launch the Octopus Manager.</p>
+</li>
+</ol>
+<h3 id="setup-create-windows-user">Setup: Create Windows User</h3>
+<p>We&#39;ll need a Windows account to run the Octopus Deploy website and tentacle agent.  Technically these can run under the <code>SYSTEM</code> account, but there&#39;s cases where you&#39;ll want to login as the OctopusDeploy account to install certificates or adjust registry keys.  Better to run Octopus as a regular user.</p>
+<p>You could choose to make this a domain user rather than a local user.</p>
+<ol>
+<li><p>Right click on <code>This PC</code> (formerly <code>My Computer</code>), and choose Manage.</p>
+</li>
+<li><p>Choose Local Users and Groups then Users.</p>
+</li>
+<li><p>Right-click in the main window and choose <code>New User</code>.</p>
+</li>
+<li><p>Enter necessary user details.</p>
+</li>
+</ol>
+<p><img src="images/09-octopus-deploy/1-octopus-user.png" alt="New User"></p>
+<ol>
+<li><p>Ensure <code>User must change password</code> is <strong>not</strong> checked, <code>User cannot change password</code> is checked, and <code>Password never expires</code> is checked.</p>
+</li>
+<li><p>Click <code>Create</code>.</p>
+</li>
+<li><p>Open the newly created user, choose <code>Member Of</code>, and add <code>Administrators</code>.  The user may stop and start services, configure IIS settings, or other behaviors restricted to administrative users, so best to give this account access up front.</p>
+</li>
+</ol>
+<h3 id="setup-create-database">Setup: Create Database</h3>
+<p>TeamCity will connect via username/password to SQL Server, so let&#39;s set up a database and user.</p>
+<ol>
+<li><p>Start -&gt; SQL Server Management Studio (SSMS)</p>
+</li>
+<li><p>Connect to the local database using Windows Authentication.</p>
+</li>
+<li><p>Right-click on Databases, and choose <code>New Database</code>.</p>
+</li>
+<li><p>Enter a Database Name, and click Create.</p>
+</li>
+</ol>
+<p><img src="images/09-octopus-deploy/2-new-database.png" alt="Database Name"></p>
+<ol>
+<li><p>Inside Security, right-click on Logins and choose <code>New Login</code>.</p>
+</li>
+<li><p>Enter the Login Name, password, uncheck <code>Enforce password policy</code>, and change the Default database to the database created above.</p>
+</li>
+</ol>
+<p><img src="images/09-octopus-deploy/3-database-user.png" alt="New User"></p>
+<ol>
+<li><p>Switch to the <code>User Mapping</code> page, and set:</p>
+<p>a. Check the database created above.</p>
+<p>b. Set default schema to <code>dbo</code>.</p>
+<p>c. Check <code>db_owner</code> because Octopus Deploy will create tables.</p>
+</li>
+</ol>
+<p><img src="images/09-octopus-deploy/4-database-user-mapping.png" alt="User Mapping"></p>
+<p>(Technically you only need <code>db_owner</code> as you first configure Octopus Deploy and whenever you upgrade to a new version.)</p>
+<ol>
+<li>Click <code>OK</code> to create the user.</li>
+</ol>
+<h3 id="configure">Configure</h3>
+<ol>
+<li><p>Sadly, you must sign up for the 45-day free trial of the Pro version on startup.  We&#39;ll quickly flip to the community edition after we install.</p>
+</li>
+<li><p>Choose <code>Custom Domain Account</code>, then click <code>Select User</code> to pick the Windows user you created above.</p>
+</li>
+</ol>
+<p><img src="images/09-octopus-deploy/5-set-user.png" alt="Choose user"></p>
+<ol>
+<li>Set Server Name to <code>(local)</code>, choose <code>SQL Server Authentication</code>, and enter the database credentials and database name you created above.</li>
+</ol>
+<p><img src="images/09-octopus-deploy/6-set-database.png" alt="Set Database"></p>
+<ol>
+<li>Change the port to <code>8090</code> because IIS runs on port 80 by default.</li>
+</ol>
+<p><img src="images/09-octopus-deploy/7-change-port.png" alt="Change Port"></p>
+<ol>
+<li><p>Create the first user account to the web portal.</p>
+</li>
+<li><p>Click next a few more times and finish to kick off the install.</p>
+</li>
+<li><p>Click <code>Open in browser</code> to launch the Octopus web portal.</p>
+</li>
+<li><p>After logging in, click Configuration on the top-right.</p>
+</li>
+<li><p>In License, switch to <code>Community Edition</code> and save.</p>
+</li>
+</ol>
+<p>Octopus Deploy is now setup and ready to setup deployments.  Kudos to the Octopus team for the helpful setup experience that&#39;ll walk us through this process.</p>
+<h3 id="backup-master-key">Backup Master Key</h3>
+<p>Optional: <a href="https://octopus.com/docs/reference/security-and-encryption">backup your master key</a> to be able to safely restore secrets stored in Octopus.</p>
+
+				</div>
+
+				<hr>
+				<div class="chapter">
+					<h2 id="git-server">GIT SERVER</h2>
+<p>For production use, you&#39;ll look to <a href="https://www.github.com/">GitHub</a>, <a href="https://www.bitbucket.com">BitBucket</a>, Visual Studio Team Services, or another cloud provider.  Or perhaps you&#39;d like to run Git on-premise with servers like <a href="https://github.com/otac0n/WebGitNet">WebGit.NET</a> or any of the servers listed <a href="http://stackoverflow.com/questions/5507489/git-server-like-github">here</a></p>
+<p>For this demo, we&#39;ll just use a local folder containing a bare git repository.</p>
+<h3 id="create">Create</h3>
+<hr>
+<ol>
+<li><p>Create a new folder at <code>C:\git-server</code>.</p>
+</li>
+<li><p>Create a folder named <code>DotNetWebsite</code> inside <code>C:\git-server</code>.</p>
+</li>
+<li><p>Open a terminal in this folder and run <code>git init --bare</code>.</p>
+<p> <img src="images/10-git-server/1-create-bare-repository.png" alt="Create bare repository"></p>
+</li>
+</ol>
+<h3 id="configure">Configure</h3>
+<ol>
+<li><p>Open a command window inside the source code project you created in Step 7: BUILD .NET SOLUTION.</p>
+</li>
+<li><p>Type <code>git remote add origin c:\git-server\DotNetWebsite</code>.  This creates a link from our project to the &quot;server&quot;.</p>
+</li>
+<li><p>Type <code>git push origin master</code>.  This pushes the source code to the server.</p>
+</li>
+<li><p>Type <code>git branch -u origin/master</code>.  This links the current local branch to the server&#39;s branch.</p>
+<p> <img src="images/10-git-server/2-add-remote-and-push.png" alt="Add remote and push"></p>
+</li>
+</ol>
+<h3 id="test-it-out">Test it out</h3>
+<ol>
+<li><p>From the source code project terminal, type <code>git pull</code>.</p>
+</li>
+<li><p>If you get no errors and it says <code>Already up to date</code>, it works.</p>
+</li>
+</ol>
+
+				</div>
+
+				<hr>
+				<div class="chapter">
+					<h2 id="the-build-script">THE BUILD SCRIPT</h2>
+<p>Though we could use build server plugins, this is fragile:</p>
+<ul>
+<li><p>Updating or rebuilding the build server requires reinstalling plugins.</p>
+</li>
+<li><p>All projects must use the same version of each plugin.</p>
+</li>
+<li><p>All plugins from all projects must be compatible.</p>
+</li>
+</ul>
+<p>To avoid these pitfalls, we&#39;ll use the build server solely to check the git repository and run a script.  Everything else will be done in this script and versioned together with our app.  Want to build an old version of the software?  Just check out that version and run the build script.</p>
+<h3 id="elements-of-the-script">Elements of the Script</h3>
+<p>We need the script to do the following things:</p>
+<ol>
+<li><p>Restore NuGet packages</p>
+</li>
+<li><p>Build the solution</p>
+</li>
+<li><p>Run the unit tests</p>
+</li>
+</ol>
+<h3 id="writing-the-build-script">Writing the build script</h3>
+<p>We could choose Powershell or Make or Gulp or Cake or CSscript, but for simplicity, let&#39;s use a batch file:</p>
+<ol>
+<li><p>Create <code>build.bat</code> using your favorite notepad replacement in the source code directory you crated in Step 7: BUILD .NET SOLUTION.</p>
+</li>
+<li><p>Add the NuGet restore lines:</p>
+<pre><code class="lang-bash">nuget restore
+if not %errorlevel% equ 0 (
+ exit /b %errorlevel%
+)
+</code></pre>
+<p>We use <code>exit /b %errorlevel%</code> to pass build errors to the calling program.  Without this, the build would silently fail and just continue to the next line.</p>
+</li>
+<li><p>Add the lines to build the solution:</p>
+<pre><code class="lang-bash">msbuild WebApplication1.sln /m /p:Configuration=Release
+if not %errorlevel% equ 0 (
+ exit /b %errorlevel%
+)
+</code></pre>
+<p><code>/m</code> says &quot;use all cores&quot;</p>
+</li>
+<li><p>Add the lines to build the solution:</p>
+<pre><code class="lang-bash">msbuild WebApplication1.sln /m /p:Configuration=Release
+if not %errorlevel% equ 0 (
+ exit /b %errorlevel%
+)
+</code></pre>
+</li>
+<li><p>Add these lines to run the unit tests:</p>
+<pre><code class="lang-bash">packages\xunit.runner.console.2.2.0\tools\xunit.console.exe WebApplication1.Tests\bin\Release\WebApplication1.Tests.dll -nunit WebApplication1.Tests.xml
+if not %errorlevel% equ 0 (
+ exit /b %errorlevel%
+)
+</code></pre>
+<p>When we run package restore, the xunit runner will get restored to <code>packages\xunit.runner.console.2.2.0\tools\xunit.console.exe</code>.</p>
+<p><code>-nunit file.xml</code> will write the unit tests results in NUnit format to a file.  We&#39;ll tell the build server to pick up this file and show the unit test results.</p>
+</li>
+</ol>
+<h3 id="test-it-out">Test it out</h3>
+<ol>
+<li><p>From a terminal in the source code directory, run <code>build.bat</code>.</p>
+</li>
+<li><p>Type <code>echo %errorlevel%</code>.  If it says <code>0</code>, it worked.</p>
+</li>
+</ol>
+<h3 id="add-the-file-to-source-control">Add the file to source control</h3>
+<ol>
+<li><p>Open <code>.gitignore</code> in your favorite text editor.</p>
+</li>
+<li><p>Add a new line with <code>*.Tests.xml</code> so git will ignore test results.</p>
+</li>
+<li><p>Type these commands to add the build script to source control:</p>
+<pre><code class="lang-bash">git add .gitignore
+git add build.bat
+git commit -m &quot;add build script&quot;
+</code></pre>
+</li>
+<li><p>Type <code>git push origin master</code> to send the changes to the git server.</p>
+</li>
+</ol>
+
+				</div>
+
+				<hr>
+				<div class="chapter">
+					<h2 id="teamcity-build">TEAMCITY BUILD</h2>
+<p>We&#39;ve already got TeamCity running on <a href="http://localhost:8080">port 8080</a>.  Let&#39;s create a build.</p>
+<h3 id="configure">Configure</h3>
+<ol>
+<li><p>Click Administration on the top-right.</p>
+</li>
+<li><p>Click <code>Create project</code>.</p>
+</li>
+<li><p>Click <code>Manually</code>.  Though the &quot;From a repository URL&quot; is enticing, our repository url is just a local folder, so it&#39;s difficult for TeamCity to discover things about it.</p>
+</li>
+<li><p>Enter a project name, the Project ID will get filled out automatically.</p>
+<p> <img src="images/12-teamcity-build/1-create-project.png" alt="Create Project"></p>
+</li>
+<li><p>Click <code>Create</code>.</p>
+</li>
+<li><p>In the next screen, click <code>Create build configuration</code>.</p>
+</li>
+<li><p>Again click <code>Manually</code>, enter a name, and the Build configuration will get filled out automatically.</p>
+</li>
+<li><p>Click <code>Create</code>.</p>
+</li>
+</ol>
+<h3 id="create-link-to-version-control">Create link to Version Control</h3>
+<p>A &quot;VCS Root&quot; is a link to the source control repository the build will use.</p>
+<ol>
+<li><p>In the next screen, switch <code>Type of VCS</code> from Guess to <code>Git</code>.</p>
+</li>
+<li><p>Enter a <code>VCS Root name</code>.</p>
+</li>
+<li><p>Enter the Fetch URL as <code>C:\git-server\DotNetWebsite</code>.</p>
+<p> <img src="images/12-teamcity-build/2-create-vcs-root.png" alt="VCS Root details"></p>
+</li>
+<li><p>Optional: Click <code>Advanced Options</code>, and change <code>Username style</code> to <code>Author Name and Email</code>.</p>
+</li>
+<li><p>Click <code>Create</code>.</p>
+</li>
+</ol>
+<h3 id="create-build-steps">Create Build Steps</h3>
+<ol>
+<li><p>Choose <code>Build Steps</code> from the menu on the left.</p>
+</li>
+<li><p>Click <code>Auto-detect build steps</code>.</p>
+</li>
+<li><p>Choose <code>Custom script: call build.bat</code> from the returned list, and click &quot;Use selected&quot;.</p>
+<p> <img src="images/12-teamcity-build/3-build-steps.png" alt="Build Steps"></p>
+</li>
+</ol>
+<p>Though the solution step is intriguing, our build script will be versioned with our project, freeing us from potential plugin collision.</p>
+<h3 id="source-change-build-trigger">Source change -&gt; Build trigger</h3>
+<ol>
+<li><p>Choose Triggers</p>
+</li>
+<li><p><code>Add a new trigger</code></p>
+</li>
+<li><p>Choose <code>VCS trigger</code></p>
+</li>
+<li><p>Click Save.</p>
+</li>
+</ol>
+<p>This will start the build every time TeamCity discovers a source code change.</p>
+<h3 id="show-test-results">Show Test Results</h3>
+<ol>
+<li><p>Choose Build Features.</p>
+</li>
+<li><p>Click <code>Add a build feature</code>.</p>
+</li>
+<li><p>Choose <code>XML report processing</code> from the drop-down.</p>
+</li>
+<li><p>Report type is <code>NUnit</code>.</p>
+</li>
+<li><p>Monitoring rules is the file path to match: <code>*.Tests.xml</code></p>
+<p> <img src="images/12-teamcity-build/4-test-results.png" alt="Test results"></p>
+</li>
+<li><p>Click <code>Save</code>.</p>
+</li>
+</ol>
+<h3 id="test-it-out">Test it out</h3>
+<p>Now that we&#39;ve got our build configured, let&#39;s run it.</p>
+<ol>
+<li><p>Click on the TeamCity logo or <code>Projects</code> in the top-right.</p>
+</li>
+<li><p>Click <code>Run</code> on the far right of the build we created.</p>
+<p> <img src="images/12-teamcity-build/5-run-the-build.png" alt="Run the build"></p>
+</li>
+<li><p>In a minute or two, the build will go green. Congratulations! Celebrate!</p>
+</li>
+<li><p>Click on the &quot;Tests passed&quot; link to see details about the build including test results, build log, and git commit details.</p>
+</li>
+</ol>
+<h3 id="optional-save-teamcity-configuration-to-source-control">Optional: Save TeamCity configuration to Source Control</h3>
+<p>Optional: TeamCity can save the configuration to source control so you can keep track of how build configurations evolve.</p>
+<ol>
+<li><p>Create <code>C:\git-server\TeamCity</code> folder.</p>
+</li>
+<li><p>Open command prompt in this folder.</p>
+</li>
+<li><p>Type <code>git init --bare</code>.</p>
+</li>
+<li><p>In TeamCity dashboard, click <code>Administration</code>.</p>
+</li>
+<li><p>Click <code>Projects</code>.</p>
+</li>
+<li><p>Click <code>Root Project</code>.</p>
+</li>
+<li><p>Click <code>VCS Roots</code>.</p>
+</li>
+<li><p>Click <code>Create VCS Root</code>.</p>
+</li>
+<li><p>Name the root <code>TeamCity</code>.</p>
+</li>
+<li><p>Set the <code>Fetch URL</code> to <code>C:\git-server\TeamCity</code>.</p>
+<p><img src="images/12-teamcity-build/6-teamcity-vcs-root.png" alt="TeamCity VCS Root"></p>
+</li>
+<li><p>From the menu on the left, choose <code>Versioned Settings</code> at the bottom.</p>
+</li>
+<li><p>Click <code>Synchronization enabled</code>.</p>
+</li>
+<li><p>Choose the <code>TeamCity</code> VCS root.</p>
+</li>
+<li><p>Click on <code>Show settings changes in builds</code>.</p>
+</li>
+<li><p>Click Apply.</p>
+<p><img src="images/12-teamcity-build/7-versioned-settings.png" alt="Versioned Settings"></p>
+</li>
+</ol>
+
+				</div>
+
+				<hr>
+				<div class="chapter">
+					<h2 id="octopus-deploy-build">OCTOPUS DEPLOY BUILD</h2>
+<p>Now that we have a TeamCity build, let&#39;s deploy it to IIS with Octopus Deploy.  Octopus Deploy&#39;s setup wizard is wonderful at guiding us through all the things.</p>
+<h3 id="create-environments">Create Environments</h3>
+<p>An environment represents a deployment phase.  For example, we could have multiple &quot;Dev&quot; servers, some &quot;Web&quot; servers, some &quot;Database&quot; servers, but all &quot;Dev&quot; servers.  &quot;Dev&quot; is the environment, &quot;10.0.0.1&quot; is the &quot;Deployment Target&quot;, &quot;Web&quot; is the role.</p>
+<ol>
+<li><p>Launch Octopus Web Dashboard at <a href="http://localhost:8090">http://localhost:8090</a>.</p>
+</li>
+<li><p>Click <code>Create environments</code> in <code>Step 2: Configure</code>.</p>
+</li>
+<li><p>Click <code>Add your first Environment</code>.</p>
+</li>
+<li><p>Name the environment <code>Dev</code> and click <code>Save</code>.</p>
+</li>
+<li><p>Click <code>Add Deployment Target</code>.</p>
+</li>
+<li><p>Choose <code>Listening Tentacle</code>.</p>
+</li>
+<li><p>The screen now prompts you to download the <a href="https://octopus.com/downloads"><code>64-bit installer</code></a>, and shows you the <code>thumbprint</code>.</p>
+</li>
+<li><p>Leave this window open, and let&#39;s install the tentacle.</p>
+</li>
+</ol>
+<h3 id="installing-the-tentacle">Installing the Tentacle</h3>
+<p>The tentacle is the agent running on each machine that Octopus will deploy software to.</p>
+<ol>
+<li><p>Download the <a href="https://octopus.com/downloads"><code>Octopus Tentacle</code></a>.</p>
+</li>
+<li><p>Launch <code>Octopus.Tentacle.bunch_of_numbers.msi</code>.</p>
+</li>
+<li><p>Click next many times, and click Finish to begin the install.</p>
+</li>
+<li><p>Click <code>Getting Started</code> to launch the tentacle setup wizard.</p>
+</li>
+<li><p>Click next a few times, noting these important settings:</p>
+<ul>
+<li><p>Choose <code>Listening Tentacle</code>.</p>
+</li>
+<li><p>Copy the thumbprint from the Server webpage into the Tentacle dialog.</p>
+<p><img src="images/13-octopus-build/1-server-thumbprint.png" alt="Server Thumbprint"></p>
+</li>
+</ul>
+</li>
+<li><p>Leave the final page open so you can copy the tentacle thumbprint later.</p>
+</li>
+</ol>
+<h3 id="configure-the-tentacle">Configure the Tentacle</h3>
+<ol>
+<li><p>Back in the Octopus web dashboard, enter <code>localhost</code> for hostname.</p>
+</li>
+<li><p>Click <code>Discover</code>.</p>
+</li>
+<li><p>In the next screen, set Display Name to <code>Localhost-Dev</code>.</p>
+</li>
+<li><p>Environments is set to <code>Dev</code>.</p>
+</li>
+<li><p>In Roles, type <code>Web</code>.</p>
+</li>
+<li><p>Ensure the tentacle thumbprints match.</p>
+<p> <img src="images/13-octopus-build/2-tentacle-thumbprint.png" alt="Tentacle Thumbprint"></p>
+</li>
+<li><p>Click Save at the bottom.</p>
+</li>
+</ol>
+<h3 id="configure-test-environment">Configure Test environment</h3>
+<ol>
+<li><p>Click <code>Add Environment</code> on the far right of the grey bar at the top (under the blue bar, above the green button).</p>
+</li>
+<li><p>Name this environment <code>Test</code> and click <code>Save</code>.</p>
+</li>
+<li><p>In the <code>Test</code> row, click <code>Add deployment target</code>.</p>
+</li>
+<li><p>Choose <code>Listening Tentacle</code>.</p>
+</li>
+<li><p>Set host name to <code>localhost</code>.</p>
+</li>
+<li><p>Click <code>Discover</code>.</p>
+</li>
+<li><p>Set Display name to <code>Localhost-Test</code>.</p>
+</li>
+<li><p>Environments is <code>Test</code>.</p>
+</li>
+<li><p>Set Roles to <code>Web</code>.</p>
+</li>
+<li><p>Validate the tentacle thumbprints match.</p>
+</li>
+<li><p>Click <code>Save</code> at the bottom.</p>
+</li>
+</ol>
+<h3 id="modify-the-build">Modify the Build</h3>
+<p>Next we need to build an Octopus Deploy package, push it to the Octopus server, and trigger a release.  We&#39;ll extend the build script to use <a href="https://octopus.com/docs/packaging-applications/nuget-packages/using-octopack">OctoPack</a>, and we&#39;ll leverage the <code>Octo.exe</code> command-line tool.</p>
+<ol>
+<li><p>Already in the solution, the Web project contains the <code>OctoPack</code> NuGet package.  If this didn&#39;t exist, we&#39;d fire up Visual Studio and add the package.</p>
+</li>
+<li><p>Open up the solution folder, and open up <code>build.bat</code> in your favorite editor.</p>
+</li>
+<li><p>Change the <code>msbuild</code> line to this to run Octopack:</p>
+<pre><code class="lang-bash"> msbuild WebApplication1.sln /m /p:Configuration=Release /t:Build /p:RunOctoPack=true
+</code></pre>
+<p>We&#39;ve added <code>/t:Build /p:RunOctoPack=true</code> to the end.</p>
+</li>
+<li><p>Add these new lines to the bottom to push the package to Octopus:</p>
+<pre><code class="lang-bash"> Octo.exe push --package WebApplication1\obj\octopacked\WebApplication1.%BUILD_NUMBER%.nupkg --replace-existing --server http://localhost:8090 --apiKey %OCTO_KEY%
+ if not %errorlevel% equ 0 (
+     exit /b %errorlevel%
+ )
+</code></pre>
+<p>This pushes the OctoPack package to Octopus Deploy.</p>
+</li>
+<li><p>Add these lines to the bottom:</p>
+<pre><code class="lang-bash"> Octo.exe create-release --project WebApplication1 --version %BUILD_NUMBER% --deployto=Dev --waitfordeployment --server http://localhost:8090 --apiKey %OCTO_KEY%
+ if not %errorlevel% equ 0 (
+     exit /b %errorlevel%
+ )
+</code></pre>
+<p>This creates an Octopus release and sends it to the Dev server(s).</p>
+</li>
+<li><p>Add these lines to the <strong>top</strong>:</p>
+<pre><code class="lang-bash"> PowerShell -NoProfile -NoLogo -ExecutionPolicy unrestricted -Command &quot;(Get-Content WebApplication1\Properties\AssemblyInfo.cs).replace(&#39;1.0.0.0&#39;, &#39;%BUILD_NUMBER%&#39;) | Set-Content WebApplication1\Properties\AssemblyInfo.cs&quot;
+ if not %errorlevel% equ 0 (
+     exit /b %errorlevel%
+ )
+</code></pre>
+<p>This changes the <code>AssemblyInfo.cs</code> file so it&#39;ll bake the <code>BUILD_NUMBER</code> version into the app too.</p>
+</li>
+</ol>
+<p>The completed script now looks like this:</p>
+<pre><code class="lang-bash">PowerShell -NoProfile -NoLogo -ExecutionPolicy unrestricted -Command &quot;(Get-Content WebApplication1\Properties\AssemblyInfo.cs).replace(&#39;1.0.0.0&#39;, &#39;%BUILD_NUMBER%&#39;) | Set-Content WebApplication1\Properties\AssemblyInfo.cs&quot;
+if not %errorlevel% equ 0 (
+    exit /b %errorlevel%
+)
+
+nuget restore
+if not %errorlevel% equ 0 (
+    exit /b %errorlevel%
+)
+
+msbuild WebApplication1.sln /m /p:Configuration=Release /t:Build /p:RunOctoPack=true
+if not %errorlevel% equ 0 (
+    exit /b %errorlevel%
+)
+
+packages\xunit.runner.console.2.2.0\tools\xunit.console.exe WebApplication1.Tests\bin\Release\WebApplication1.Tests.dll -nunit WebApplication1.Tests.xml
+if not %errorlevel% equ 0 (
+    exit /b %errorlevel%
+)
+
+Octo.exe push --package WebApplication1\obj\octopacked\WebApplication1.%BUILD_NUMBER%.nupkg --replace-existing --server http://localhost:8090 --apiKey %OCTO_KEY%
+if not %errorlevel% equ 0 (
+    exit /b %errorlevel%
+)
+
+Octo.exe create-release --project WebApplication1 --version %BUILD_NUMBER% --deployto=Dev --waitfordeployment --server http://localhost:8090 --apiKey %OCTO_KEY%
+if not %errorlevel% equ 0 (
+    exit /b %errorlevel%
+)
+</code></pre>
+<h3 id="octopus-api-key">Octopus API key</h3>
+<p>In the previous steps, we referenced the <code>%OCTO_KEY%</code> environment variable.  Let&#39;s issue an API key in Octopus, and save it in TeamCity.</p>
+<ol>
+<li><p>In the <a href="http://localhost:8090">Octopus Web App</a>, click your name, and choose <code>Profile</code>.</p>
+</li>
+<li><p>Switch to the <code>API Keys</code> tab.</p>
+</li>
+<li><p>Click <code>New API key</code>.</p>
+<p> <img src="images/13-octopus-build/3-api-key.png" alt="API Key"></p>
+</li>
+<li><p>Name the key descriptively (perhaps <code>TeamCity</code>).</p>
+</li>
+<li><p>Click <code>Generate</code>.</p>
+</li>
+<li><p>Note the message that says these keys can&#39;t be retrieved.</p>
+</li>
+<li><p>Copy the API key.</p>
+</li>
+<li><p>Open the <a href="http://localhost:8020">TeamCity Web App</a>, and click <code>Administration</code>.</p>
+</li>
+<li><p>Click on <code>&lt;Root project&gt;</code> in the middle of the page.</p>
+</li>
+<li><p>Click on <code>Parameters</code> on the left menu.</p>
+</li>
+<li><p>Click on <code>Add new parameter</code>.</p>
+</li>
+<li><p>Change the Kind to <code>Environment Variable</code>.</p>
+</li>
+<li><p>Change the Name to <code>env.OCTO_KEY</code>.</p>
+</li>
+<li><p>Paste the API Key from Octopus into the Value box.</p>
+<p><img src="images/13-octopus-build/4-octo-key-to-teamcity.png" alt="Octo key to TeamCity"></p>
+</li>
+<li><p>Click the <code>Spec</code> edit button.</p>
+</li>
+<li><p>Change Display to <code>Hidden</code>.</p>
+</li>
+<li><p>Check the <code>Read-only</code> checkbox.</p>
+</li>
+<li><p>Change the Type to <code>Password</code>.</p>
+<p><img src="images/13-octopus-build/5-parameter-specs.png" alt="Parameter Specs"></p>
+</li>
+<li><p>Push save.</p>
+</li>
+<li><p>Push save again.</p>
+</li>
+</ol>
+<p>The key is now saved.</p>
+<h3 id="octo-exe">Octo.exe</h3>
+<p>In the build above, we referenced Octo.exe, but we haven&#39;t installed it yet.  Let&#39;s install it and add it to <code>PATH</code>.</p>
+<ol>
+<li><p>Download <code>Command Line</code> from <a href="https://octopus.com/downloads">Octopus Download</a></p>
+</li>
+<li><p>Unzip <code>OctopusTools.bunch_of_numbers.zip</code>.</p>
+</li>
+<li><p>Create the folder <code>C:\Program Files (x86)\OctopusTools</code></p>
+</li>
+<li><p>Copy <code>Octo.exe</code> into this folder.</p>
+</li>
+<li><p>Start -&gt; Type <code>environment variables</code> to launch <code>Edit System Environment Variables</code></p>
+</li>
+<li><p>Click <code>Environment Variables...</code></p>
+</li>
+<li><p>In the lower <code>System</code> section, choose <code>PATH</code> and click <code>Edit</code></p>
+</li>
+<li><p>Add <code>C:\Program Files (x86)\OctopusTools</code> to the list.</p>
+</li>
+<li><p>Start -&gt; Services.</p>
+</li>
+<li><p>Restart both <code>TeamCity Server</code> and <code>TeamCity Build Agent</code> so they&#39;ll get the new <code>PATH</code> environment variable.  Restart any other services that depend on <code>PATH</code>.</p>
+</li>
+</ol>
+<h3 id="change-build-number-format">Change Build Number Format</h3>
+<p>Octopus Deploy presumes the <code>VERSION</code> is 4 digits (e.g. <code>1.2.3.4</code>), and TeamCity&#39;s version is currently only a single digit (e.g. <code>4</code>).  Let&#39;s change TeamCity&#39;s version to <code>1.0.BUILD#.0</code>, and use the build&#39;s count to increment the <a href="http://semver.org/">Semantic Version</a> of the app automatically.</p>
+<ol>
+<li><p>Launch the TeamCity Web Dashboard at <a href="http://localhost:8080">http://localhost:8080</a>.</p>
+</li>
+<li><p>Since you just restarted it, it may take a minute for it to come up.</p>
+</li>
+<li><p>Click Administration on the top-right.</p>
+</li>
+<li><p>Click on <code>.NET Web Application</code> in the middle of the page.</p>
+</li>
+<li><p>Click on <code>.NET Web Application</code> under the <code>Build Configurations</code> section.</p>
+</li>
+<li><p>Click the orange <code>Show advanced options</code> link towards the bottom.</p>
+</li>
+<li><p>Change Build number format to <code>1.0.%build.counter%.0</code>.</p>
+<p> <img src="images/13-octopus-build/6-build-number-format.png" alt="Build number format"></p>
+</li>
+<li><p>Click <code>Save</code>.</p>
+</li>
+</ol>
+<h3 id="create-a-deployment-project">Create a deployment project</h3>
+<p>Back in Octopus Deploy, we just did Step 3: Packaging.  We haven&#39;t told Octopus yet since we haven&#39;t committed the build script or triggered a build.  Now let&#39;s setup the release steps.</p>
+<ol>
+<li><p>Launch the Octopus Web Dashboard at <a href="http://localhost:8090">http://localhost:8090</a>.</p>
+</li>
+<li><p>Click on <code>Create a Project</code> within the &quot;Step 4&quot; box.</p>
+</li>
+<li><p>Click <code>Add your first Project</code>.</p>
+</li>
+<li><p>Set Name to <code>WebApplication1</code>.</p>
+</li>
+<li><p>Click Save.</p>
+</li>
+<li><p>Click <code>Define your deployment process</code>.</p>
+</li>
+<li><p>Click <code>Add your first step</code>.</p>
+</li>
+<li><p>Choose the <code>Deploy an IIS Web Site</code> step template.</p>
+</li>
+<li><p>Set the Step Name to <code>Deploy WebApplication1</code></p>
+</li>
+<li><p>Set roles to <code>Web</code>.</p>
+</li>
+<li><p>The Package feed is <code>Octopus Server (built-in)</code>.</p>
+</li>
+<li><p>Set the Package ID to <code>WebApplication1</code> -- that&#39;s what we called it in the build script.</p>
+<p><img src="images/13-octopus-build/7-deployment-steps.png" alt="Deployment steps"></p>
+</li>
+<li><p>Scroll down, and let&#39;s configure more deployment properties.  Here&#39;s all the properties we&#39;d usually set in Internet Information Services (IIS).</p>
+</li>
+<li><p><code>IIS Web Site</code> is already selected.</p>
+</li>
+<li><p>Name the WebSite <code>WebApplication1-</code> then click the icon to the right, and pick <code>Octoups.Environment.Name</code> from the list.  The full Web Site name is now <code>WebApplication1-#{Octopus.Environment.Name}</code>.  This means for Dev, it&#39;ll be <code>WebApplication1-Dev</code> and for Test it&#39;ll be <code>WebApplication1-Test</code>.</p>
+</li>
+<li><p>Set Application Pool the same way so it reads <code>WebApplication1-#{Octopus.Environment.Name}</code></p>
+<p><img src="images/13-octopus-build/8-website-name.png" alt="Deployment steps"></p>
+</li>
+<li><p>Scroll down to Bindings, and delete the current &quot;Port 80&quot; binding by clicking the grey <code>X</code> on the right.</p>
+</li>
+<li><p>Click <code>Add binding</code>.</p>
+</li>
+<li><p>Change the port to <code>800</code> then pick <code>Octopus.Environment.SortOrder</code> from the variable list.  The final port is <code>800#{Octopus.Environment.SortOrder}</code>.  This means Dev will be port 8000, and Test will be port 8001.  As long as we have less than 10 environments, this strategy works great.  In a real-world environment, we&#39;d likely install tentacles on different machines, and leave the bindings at port 80 and 443.</p>
+</li>
+<li><p>Click <code>Save</code> to complete the binding setup.</p>
+</li>
+<li><p>Turn on <code>Enable Anonymous authentication</code>.</p>
+</li>
+<li><p>Turn off <code>Enable Windows authentication</code>.</p>
+</li>
+<li><p>Scroll through other settings, adjusting to taste.</p>
+</li>
+<li><p>Note the <code>Web.&lt;EnvironmentName&gt;.config</code> section.  If we had <code>Web.Dev.config</code> and <code>Web.Test.config</code> files in the source, we could automatically transform these settings as part of the deployment.</p>
+</li>
+<li><p>Click <code>Configure features</code> and note that it also replaces the <code>#{Octopus...</code> variables in config files as well.</p>
+</li>
+<li><p>Click save at the bottom.</p>
+</li>
+</ol>
+<h3 id="commit-build-script">Commit build script</h3>
+<p>Now that we&#39;ve got deployment configured in the build, in TeamCity, and in Octopus, let&#39;s put it to work.  Let&#39;s commit the build script and kick off a deployment.</p>
+<ol>
+<li><p>Open a command prompt in the source code directory.</p>
+</li>
+<li><p>Type <code>git add build.bat</code> to add the build file modifications.</p>
+</li>
+<li><p>Type <code>git commit -m &quot;build script now deploys&quot;</code></p>
+</li>
+<li><p>Type <code>git push origin master</code></p>
+</li>
+<li><p>Open up the <a href="http://localhost:8080/">TeamCity Web Dashboard</a> to see the new build kick off.</p>
+</li>
+<li><p>If the build went red the first time, that&#39;s ok.  Open up the failed build, switch to the Build Log tab, scroll down, maybe opening up some of the <code>(+)</code> buttons, and look at the gritty details.  Adjust, commit, push, and watch the build.</p>
+</li>
+<li><p>If everything went well, you&#39;ll see the build number&#39;s new format, the build log shows the OctoPack package, the release uploaded to Octopus Deploy, and the release pushed to Dev.</p>
+</li>
+<li><p>Open up the <a href="http://localhost:8090">Octopus Deploy Web Dashboard</a> to see the release pushed to Dev.</p>
+</li>
+<li><p>Open up Internet Information Services, and see the <code>WebApplication1-Dev</code> website and app pool.</p>
+</li>
+<li><p>Open up the Dev Website at <a href="http://localhost:8000">http://localhost:8000</a> to see the deployed website.</p>
+</li>
+<li><p>This is a serious milestone.  Jump up and celebrate.  You have an automated build and deployment pipeline!</p>
+</li>
+</ol>
+
+				</div>
+				<hr>
+				<div class="chapter">
+					<h2 id="octopus-deploy-to-test">OCTOPUS DEPLOY TO TEST</h2>
+<ol>
+<li><p>Open up the <a href="http://localhost:8090">Octopus Deploy Web Dashboard</a> to see the release pushed to Dev.</p>
+</li>
+<li><p>Click on the green check under Dev and open up the details of this release.</p>
+</li>
+<li><p>In the top-right, click <code>Promote to Test</code>.</p>
+</li>
+<li><p>Click the green <code>Deploy</code> button in the middle of the page.</p>
+</li>
+<li><p>Click the Octopus on the top-left, and see the build now in dev &amp; test.</p>
+</li>
+<li><p>Open up the Test Website at <a href="http://localhost:8001">http://localhost:8001</a> to see the deployed website.</p>
+</li>
+</ol>
+
+				</div>
+				<hr>
+				<!--<div class="chapter">
+					<h2 id="tags-for-creating-tutorial">Tags For Creating Tutorial</h2>
+<h3 id="exercises">Exercises</h3>
+<h4 class="exercise-start">
+  <b>Exercise</b>: Title
+</h4>
+
+<p>Details Here</p>
+<div class="exercise-end"></div>
+
+<pre><code class="lang-html">&lt;h4 class=&quot;exercise-start&quot;&gt;
+  &lt;b&gt;Exercise&lt;/b&gt;: 
+&lt;/h4&gt;
+
+&lt;div class=&quot;exercise-end&quot;&gt;&lt;/div&gt;
+</code></pre>
+<h3 id="alerts">Alerts</h3>
+<p>Bootstrap based alerts</p>
+<h4 id="danger">Danger</h4>
+<div class="alert alert-danger" role="alert">
+Danger
+</div>
+
+<pre><code class="lang-html">&lt;div class=&quot;alert alert-danger&quot; role=&quot;alert&quot;&gt;
+
+&lt;/div&gt;
+</code></pre>
+<h4 id="warning">Warning</h4>
+<div class="alert alert-warning" role="alert">
+Warning
+</div>
+
+<pre><code class="lang-html">&lt;div class=&quot;alert alert-warning&quot; role=&quot;alert&quot;&gt;
+
+&lt;/div&gt;
+</code></pre>
+<h4 id="info">Info</h4>
+<div class="alert alert-info" role="alert">
+Info
+</div>
+
+<pre><code class="lang-html">&lt;div class=&quot;alert alert-info&quot; role=&quot;alert&quot;&gt;
+
+&lt;/div&gt;
+</code></pre>
+
+				</div>
+				<hr>-->
+			</div>
+		</div>
+	</div>
+
+	<script src="scripts/built.js"></script>
+
+</body>
+
+</html>
