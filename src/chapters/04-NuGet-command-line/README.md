@@ -25,7 +25,7 @@ Let's add NuGet to the `PATH` environment variable so commands can use it withou
 
 3. In the lower `System` section, choose `PATH` and click `Edit`
 
-    ![PATH environment var](images/05-MSBUILD/1-path-env-var.png)
+    ![PATH environment var](images/05-MSBuild/1-path-env-var.png)
 
 4. Add `C:\Program Files (x86)\NuGet` to the list.
 
