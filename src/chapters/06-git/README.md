@@ -5,7 +5,7 @@ There are other version control systems, but Git is the defacto standard now.  U
 ### Install
 
 
-1. Download [Git](images/06-git/https://git-scm.com/download).
+1. Download [Git](https://git-scm.com/download).
 
 2. Launch `Git-2.bunch-a-numbers.exe`.
 
