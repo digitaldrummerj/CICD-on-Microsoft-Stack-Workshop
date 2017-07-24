@@ -13,15 +13,15 @@ Internet Information Services (IIS) is the web server that comes bundled with Wi
 
 3. Inside `Internet Information Services`, inside `World Wide Web Services`, inside `Application Development Features` turn on `ASP.NET 4.6`.  Many other things will turn on when you choose this.
 
-![Enable IIS](images/01-iis/1-enable-iis.png)
+    ![Enable IIS](images/01-iis/1-enable-iis.png)
 
 4. You may choose to turn on other settings in `Internet Information Services` such as Logging.
 
 5. Ensure that these settings are **OFF** to avoid security risks:
 
-- Inside `World Wide Web Services` ensure `WebDAV Publishing` is **OFF**.
+    - Inside `World Wide Web Services` ensure `WebDAV Publishing` is **OFF**.
 
-- Ensure `FTP Server` is **OFF**.
+    - Ensure `FTP Server` is **OFF**.
 
 6. Push OK to start the install.
 

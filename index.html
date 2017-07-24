@@ -50,17 +50,17 @@
 <li><p>Inside <code>Internet Information Services</code>, inside <code>Web Management Tools</code>, turn on <code>IIS Management Console</code>.</p>
 </li>
 <li><p>Inside <code>Internet Information Services</code>, inside <code>World Wide Web Services</code>, inside <code>Application Development Features</code> turn on <code>ASP.NET 4.6</code>.  Many other things will turn on when you choose this.</p>
+<p> <img src="images/01-iis/1-enable-iis.png" alt="Enable IIS"></p>
 </li>
-</ol>
-<p><img src="images/01-iis/1-enable-iis.png" alt="Enable IIS"></p>
-<ol>
 <li><p>You may choose to turn on other settings in <code>Internet Information Services</code> such as Logging.</p>
 </li>
 <li><p>Ensure that these settings are <strong>OFF</strong> to avoid security risks:</p>
-</li>
+<ul>
 <li><p>Inside <code>World Wide Web Services</code> ensure <code>WebDAV Publishing</code> is <strong>OFF</strong>.</p>
 </li>
 <li><p>Ensure <code>FTP Server</code> is <strong>OFF</strong>.</p>
+</li>
+</ul>
 </li>
 <li><p>Push OK to start the install.</p>
 </li>
@@ -92,7 +92,6 @@
 				<hr>
 				<div class="chapter">
 					<h2 id="sql-server-developer-edition">SQL SERVER DEVELOPER EDITION</h2>
-<p>=</p>
 <p>Starting in March 2016, SQL Server Developer Edition is now a free download.  We&#39;ll use SQL Developer Edition here because SQL Express doesn&#39;t have SQL Agent, useful for scheduling maintenance tasks.  See also <a href="https://blogs.technet.microsoft.com/dataplatforminsider/2016/03/31/microsoft-sql-server-developer-edition-is-now-free/">https://blogs.technet.microsoft.com/dataplatforminsider/2016/03/31/microsoft-sql-server-developer-edition-is-now-free/</a></p>
 <h3 id="install">Install</h3>
 <ol>
@@ -103,25 +102,22 @@
 <li><p>Open the installer by opening the new CD drive.</p>
 </li>
 <li><p>Choose installation on the left, and New SQL Server Stand-alone installation from the right</p>
+<p> <img src="images/02-sql-server/1-installer.png" alt="Install SQL Server"></p>
 </li>
-</ol>
-<p><img src="images/02-sql-server/1-installer.png" alt="Install SQL Server"></p>
-<ol>
 <li><p>Click next a few times.</p>
 </li>
 <li><p>The Windows Firewall warning is ok.  We won&#39;t use SQL Server from other machines.</p>
 </li>
 <li><p>Note these important settings:</p>
+<p> <img src="images/02-sql-server/2-install-engine.png" alt="Database Engine"></p>
+<p> Though SQL Server comes with lots of features, we only need the base engine.</p>
+<p> <img src="images/02-sql-server/3-default-instance.png" alt="Default Instance"></p>
+<p> We&#39;ll assume the default instance for the rest of the workshop.</p>
+<p> <img src="images/02-sql-server/4-permissions.png" alt="Permissions"></p>
+<p> Some of the setup will require username/password, so we&#39;ll choose mixed-mode (Windows Auth and user/pass), we&#39;ll set a password, and add the current user as an admin -- so you can manage your database.</p>
 </li>
-</ol>
-<p><img src="images/02-sql-server/2-install-engine.png" alt="Database Engine"></p>
-<p>Though SQL Server comes with lots of features, we only need the base engine.</p>
-<p><img src="images/02-sql-server/3-default-instance.png" alt="Default Instance"></p>
-<p>We&#39;ll assume the default instance for the rest of the workshop.</p>
-<p><img src="images/02-sql-server/4-permissions.png" alt="Permissions"></p>
-<p>Some of the setup will require username/password, so we&#39;ll choose mixed-mode (Windows Auth and user/pass), we&#39;ll set a password, and add the current user as an admin -- so you can manage your database.</p>
-<ol>
-<li>Finish the install choices, and complete the install.</li>
+<li><p>Finish the install choices, and complete the install.</p>
+</li>
 </ol>
 <h3 id="configure">Configure</h3>
 <p>TeamCity will use JDBC to connect on port 1433.  Let&#39;s enable TCP connections to SQL Server.</p>
@@ -129,22 +125,19 @@
 <li><p>Start -&gt; <code>SQL Server 2016 Configuration Manager</code>.</p>
 </li>
 <li><p>Open <code>SQL Server Network Configuration</code>, and open <code>TCP/IP</code>.</p>
+<p> <img src="images/02-sql-server/5-configuration-manager.png" alt="Network Configuration"></p>
 </li>
-</ol>
-<p><img src="images/02-sql-server/5-configuration-manager.png" alt="Network Configuration"></p>
-<ol>
-<li>Enable TCP/IP.</li>
-</ol>
-<p><img src="images/02-sql-server/6-enable-tcp.png" alt="Enable TCP"></p>
-<ol>
+<li><p>Enable TCP/IP.</p>
+<p> <img src="images/02-sql-server/6-enable-tcp.png" alt="Enable TCP"></p>
+</li>
 <li><p>Switch to the IP Addresses tab to see the port is 1433.</p>
 </li>
 <li><p>Close the dialog, OK to the message about restarting.</p>
 </li>
 <li><p>Switch to the SQL Server Services, and restart the SQL Server service.</p>
+<p> <img src="images/02-sql-server/7-restart-service.png" alt="Restart Service"></p>
 </li>
 </ol>
-<p><img src="images/02-sql-server/7-restart-service.png" alt="Restart Service"></p>
 <h3 id="test-it-out">Test it out</h3>
 <p>We haven&#39;t installed SQL Management Studio yet, so we can&#39;t test it yet.</p>
 <p>Once SQL Management Studio is installed:</p>
@@ -158,10 +151,8 @@
 <li><p>Click Connect in the top-left.</p>
 </li>
 <li><p>Switch to <code>SQL Server Authentication</code> (meaning username/password).</p>
+<p> <img src="images/02-sql-server/8-sql-authentication.png" alt="SQL Server Authentication"></p>
 </li>
-</ol>
-<p><img src="images/02-sql-server/8-sql-authentication.png" alt="SQL Server Authentication"></p>
-<ol>
 <li><p>Username is <code>sa</code>, password is the password you entered during installation.</p>
 </li>
 <li><p>Choose Options.</p>
@@ -169,10 +160,8 @@
 <li><p>Choose the Connection Options tab.</p>
 </li>
 <li><p>Switch to <code>TCP Protocol</code>.</p>
+<p> <img src="images/02-sql-server/9-tcp-protocol.png" alt="TCP Protocol"></p>
 </li>
-</ol>
-<p><img src="images/02-sql-server/9-tcp-protocol.png" alt="TCP Protocol"></p>
-<ol>
 <li><p>Push Connect.</p>
 </li>
 <li><p>If you get no errors, TCP connections work too.</p>
@@ -231,10 +220,8 @@
 <li><p>Click <code>Environment Variables...</code></p>
 </li>
 <li><p>In the lower <code>System</code> section, choose <code>PATH</code> and click <code>Edit</code></p>
+<p> <img src="images/05-MSBUILD/1-path-env-var.png" alt="PATH environment var"></p>
 </li>
-</ol>
-<p><img src="images/05-MSBUILD/1-path-env-var.png" alt="PATH environment var"></p>
-<ol>
 <li><p>Add <code>C:\Program Files (x86)\NuGet</code> to the list.</p>
 </li>
 <li><p>Restart any services or terminals that depend on NuGet to update the <code>PATH</code> environment variable.</p>
@@ -277,10 +264,8 @@
 <li><p>Click <code>Environment Variables...</code></p>
 </li>
 <li><p>In the lower <code>System</code> section, choose <code>PATH</code> and click <code>Edit</code></p>
+<p> <img src="images/05-MSBUILD/1-path-env-var.png" alt="PATH environment var"></p>
 </li>
-</ol>
-<p><img src="images/05-MSBUILD/1-path-env-var.png" alt="PATH environment var"></p>
-<ol>
 <li><p>Add <code>C:\Program Files (x86)\MSBuild\14.0\Bin</code> to the list, ensuring it&#39;s above any <code>C:\Windows\Microsoft.NET\Framework</code> directories.</p>
 </li>
 <li><p>Restart any services or terminals that depend on MSBuild to update the <code>PATH</code> environment variable.</p>
@@ -310,13 +295,11 @@
 <li><p>Click next a few times.</p>
 </li>
 <li><p>Note these important settings:</p>
+<p> <img src="images/06-git/1-git-from-windows-prompt.png" alt="Windows Prompt"></p>
+<p> This says put Git&#39;s install directory in <code>PATH</code> environment variable.</p>
+<p> <img src="images/06-git/2-checkout-windows-commit-unux.png" alt="Checkout Style"></p>
+<p> This says change <code>\r\n</code> to <code>\n</code> when committing and <code>\n</code> to <code>\r\n</code> when checking out.  Though it&#39;s tempting to choose the &quot;leave it how it is&quot; setting, if one person on your team forgets this setting, you&#39;ll see a lot of <code>^M</code> at the end of every line in diff views, and Visual Studio will constantly prompt you to normalize line endings.  Better to standardize on this default.</p>
 </li>
-</ol>
-<p><img src="images/06-git/1-git-from-windows-prompt.png" alt="Windows Prompt"></p>
-<p>This says put Git&#39;s install directory in <code>PATH</code> environment variable.</p>
-<p><img src="images/06-git/2-checkout-windows-commit-unux.png" alt="Checkout Style"></p>
-<p>This says change <code>\r\n</code> to <code>\n</code> when committing and <code>\n</code> to <code>\r\n</code> when checking out.  Though it&#39;s tempting to choose the &quot;leave it how it is&quot; setting, if one person on your team forgets this setting, you&#39;ll see a lot of <code>^M</code> at the end of every line in diff views, and Visual Studio will constantly prompt you to normalize line endings.  Better to standardize on this default.</p>
-<ol>
 <li><p>Finish the install choices, and complete the install.</p>
 </li>
 <li><p>Restart any services or terminals that depend on git to update the <code>PATH</code> environment variable.</p>
@@ -338,14 +321,12 @@
 <li><p>Open a new command prompt in this directory.  <em>Note</em>: because the installer changed the <code>PATH</code> environment variable, existing processes and shells won&#39;t be able to run git.</p>
 </li>
 <li><p>Type these commands:</p>
-</li>
-</ol>
-<pre><code class="lang-bash">git init
-echo &quot;test&quot; &gt; test.txt
-git add test.txt
-git commit -m &quot;test&quot;
+<pre><code class="lang-bash"> git init
+ echo &quot;test&quot; &gt; test.txt
+ git add test.txt
+ git commit -m &quot;test&quot;
 </code></pre>
-<ol>
+</li>
 <li><p>If you got no errors in the terminal, git is now installed correctly.</p>
 </li>
 <li><p>Close the terminal, and delete the test directory.</p>
@@ -363,9 +344,9 @@ git commit -m &quot;test&quot;
 <li><p>Choose <code>Show hidden files, folders, and drives</code>.</p>
 </li>
 <li><p>Uncheck <code>Hide protected operating system files</code>.</p>
+<p> <img src="images/06-git/3-folder-options.png" alt="Folder Options"></p>
 </li>
 </ol>
-<p><img src="images/06-git/3-folder-options.png" alt="Folder Options"></p>
 
 				</div>
 
@@ -570,10 +551,8 @@ git commit -m &quot;test&quot;
 <li><p>Right-click in the main window and choose <code>New User</code>.</p>
 </li>
 <li><p>Enter necessary user details.</p>
-</li>
-</ol>
 <p><img src="images/09-octopus-deploy/1-octopus-user.png" alt="New User"></p>
-<ol>
+</li>
 <li><p>Ensure <code>User must change password</code> is <strong>not</strong> checked, <code>User cannot change password</code> is checked, and <code>Password never expires</code> is checked.</p>
 </li>
 <li><p>Click <code>Create</code>.</p>
@@ -591,45 +570,36 @@ git commit -m &quot;test&quot;
 <li><p>Right-click on Databases, and choose <code>New Database</code>.</p>
 </li>
 <li><p>Enter a Database Name, and click Create.</p>
-</li>
-</ol>
 <p><img src="images/09-octopus-deploy/2-new-database.png" alt="Database Name"></p>
-<ol>
+</li>
 <li><p>Inside Security, right-click on Logins and choose <code>New Login</code>.</p>
 </li>
 <li><p>Enter the Login Name, password, uncheck <code>Enforce password policy</code>, and change the Default database to the database created above.</p>
-</li>
-</ol>
 <p><img src="images/09-octopus-deploy/3-database-user.png" alt="New User"></p>
-<ol>
+</li>
 <li><p>Switch to the <code>User Mapping</code> page, and set:</p>
 <p>a. Check the database created above.</p>
 <p>b. Set default schema to <code>dbo</code>.</p>
 <p>c. Check <code>db_owner</code> because Octopus Deploy will create tables.</p>
-</li>
-</ol>
 <p><img src="images/09-octopus-deploy/4-database-user-mapping.png" alt="User Mapping"></p>
 <p>(Technically you only need <code>db_owner</code> as you first configure Octopus Deploy and whenever you upgrade to a new version.)</p>
-<ol>
-<li>Click <code>OK</code> to create the user.</li>
+</li>
+<li><p>Click <code>OK</code> to create the user.</p>
+</li>
 </ol>
 <h3 id="configure">Configure</h3>
 <ol>
 <li><p>Sadly, you must sign up for the 45-day free trial of the Pro version on startup.  We&#39;ll quickly flip to the community edition after we install.</p>
 </li>
 <li><p>Choose <code>Custom Domain Account</code>, then click <code>Select User</code> to pick the Windows user you created above.</p>
-</li>
-</ol>
 <p><img src="images/09-octopus-deploy/5-set-user.png" alt="Choose user"></p>
-<ol>
-<li>Set Server Name to <code>(local)</code>, choose <code>SQL Server Authentication</code>, and enter the database credentials and database name you created above.</li>
-</ol>
+</li>
+<li><p>Set Server Name to <code>(local)</code>, choose <code>SQL Server Authentication</code>, and enter the database credentials and database name you created above.</p>
 <p><img src="images/09-octopus-deploy/6-set-database.png" alt="Set Database"></p>
-<ol>
-<li>Change the port to <code>8090</code> because IIS runs on port 80 by default.</li>
-</ol>
+</li>
+<li><p>Change the port to <code>8090</code> because IIS runs on port 80 by default.</p>
 <p><img src="images/09-octopus-deploy/7-change-port.png" alt="Change Port"></p>
-<ol>
+</li>
 <li><p>Create the first user account to the web portal.</p>
 </li>
 <li><p>Click next a few more times and finish to kick off the install.</p>

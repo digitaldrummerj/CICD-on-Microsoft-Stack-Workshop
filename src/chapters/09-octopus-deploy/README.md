@@ -30,7 +30,7 @@ You could choose to make this a domain user rather than a local user.
 
 4. Enter necessary user details.
 
-![New User](images/09-octopus-deploy/1-octopus-user.png)
+  ![New User](images/09-octopus-deploy/1-octopus-user.png)
 
 5. Ensure `User must change password` is **not** checked, `User cannot change password` is checked, and `Password never expires` is checked.
 
@@ -52,13 +52,13 @@ TeamCity will connect via username/password to SQL Server, so let's set up a dat
 
 4. Enter a Database Name, and click Create.
 
-![Database Name](images/09-octopus-deploy/2-new-database.png)
+  ![Database Name](images/09-octopus-deploy/2-new-database.png)
 
 5. Inside Security, right-click on Logins and choose `New Login`.
 
 6. Enter the Login Name, password, uncheck `Enforce password policy`, and change the Default database to the database created above.
 
-![New User](images/09-octopus-deploy/3-database-user.png)
+  ![New User](images/09-octopus-deploy/3-database-user.png)
 
 7. Switch to the `User Mapping` page, and set:
 
@@ -68,9 +68,9 @@ TeamCity will connect via username/password to SQL Server, so let's set up a dat
 
   c. Check `db_owner` because Octopus Deploy will create tables.
 
-![User Mapping](images/09-octopus-deploy/4-database-user-mapping.png)
+  ![User Mapping](images/09-octopus-deploy/4-database-user-mapping.png)
 
-(Technically you only need `db_owner` as you first configure Octopus Deploy and whenever you upgrade to a new version.)
+  (Technically you only need `db_owner` as you first configure Octopus Deploy and whenever you upgrade to a new version.)
 
 8. Click `OK` to create the user.
 
@@ -82,15 +82,15 @@ TeamCity will connect via username/password to SQL Server, so let's set up a dat
 
 2. Choose `Custom Domain Account`, then click `Select User` to pick the Windows user you created above.
 
-![Choose user](images/09-octopus-deploy/5-set-user.png)
+  ![Choose user](images/09-octopus-deploy/5-set-user.png)
 
 3. Set Server Name to `(local)`, choose `SQL Server Authentication`, and enter the database credentials and database name you created above.
 
-![Set Database](images/09-octopus-deploy/6-set-database.png)
+  ![Set Database](images/09-octopus-deploy/6-set-database.png)
 
 4. Change the port to `8090` because IIS runs on port 80 by default.
 
-![Change Port](images/09-octopus-deploy/7-change-port.png)
+  ![Change Port](images/09-octopus-deploy/7-change-port.png)
 
 5. Create the first user account to the web portal.
 

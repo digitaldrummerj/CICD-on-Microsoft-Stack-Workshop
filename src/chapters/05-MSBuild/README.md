@@ -28,7 +28,7 @@ Let's add MSBuild to the `PATH` environment variable so commands can use it with
 
 3. In the lower `System` section, choose `PATH` and click `Edit`
 
-![PATH environment var](images/05-MSBUILD/1-path-env-var.png)
+    ![PATH environment var](images/05-MSBUILD/1-path-env-var.png)
 
 4. Add `C:\Program Files (x86)\MSBuild\14.0\Bin` to the list, ensuring it's above any `C:\Windows\Microsoft.NET\Framework` directories.
 

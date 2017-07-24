@@ -13,13 +13,13 @@ There are other version control systems, but Git is the defacto standard now.  U
 
 4. Note these important settings:
 
-![Windows Prompt](images/06-git/1-git-from-windows-prompt.png)
+    ![Windows Prompt](images/06-git/1-git-from-windows-prompt.png)
 
-This says put Git's install directory in `PATH` environment variable.
+    This says put Git's install directory in `PATH` environment variable.
 
-![Checkout Style](images/06-git/2-checkout-windows-commit-unux.png)
+    ![Checkout Style](images/06-git/2-checkout-windows-commit-unux.png)
 
-This says change `\r\n` to `\n` when committing and `\n` to `\r\n` when checking out.  Though it's tempting to choose the "leave it how it is" setting, if one person on your team forgets this setting, you'll see a lot of `^M` at the end of every line in diff views, and Visual Studio will constantly prompt you to normalize line endings.  Better to standardize on this default.
+    This says change `\r\n` to `\n` when committing and `\n` to `\r\n` when checking out.  Though it's tempting to choose the "leave it how it is" setting, if one person on your team forgets this setting, you'll see a lot of `^M` at the end of every line in diff views, and Visual Studio will constantly prompt you to normalize line endings.  Better to standardize on this default.
 
 5. Finish the install choices, and complete the install.
 
@@ -45,12 +45,12 @@ This says change `\r\n` to `\n` when committing and `\n` to `\r\n` when checking
 
 3. Type these commands:
 
-```bash
-git init
-echo "test" > test.txt
-git add test.txt
-git commit -m "test"
-```
+    ```bash
+    git init
+    echo "test" > test.txt
+    git add test.txt
+    git commit -m "test"
+    ```
 
 4. If you got no errors in the terminal, git is now installed correctly.
 
@@ -72,4 +72,4 @@ By default, Windows hides file extensions, so files like `.gitignore` or folders
 
 5. Uncheck `Hide protected operating system files`.
 
-![Folder Options](images/06-git/3-folder-options.png)
+    ![Folder Options](images/06-git/3-folder-options.png)
